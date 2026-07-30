@@ -151,7 +151,7 @@ export default function SectionFive({
 
         {/* Floating Product Cards */}
         <FloatingCard
-          imageSrc="/imgs/2aOboQo24zMJHedRa7StLO10lRdadV3gKDCgQCoa.jpg"
+          imageSrc="/imgs/2aOboQo24zMJHedRa7StLO10lRdadV3gKDCgQCoa.webp"
           label="Tò He Rồng Thiêng"
           className="-left-6 sm:-left-16 md:-left-20 top-1/4 z-20"
           floatY={[0, -12, 0]}
@@ -160,7 +160,7 @@ export default function SectionFive({
         />
 
         <FloatingCard
-          imageSrc="/imgs/2aOboQo25brRWyPQqVTd2dtFl2v9TS4tVyrsRnaS.jpg"
+          imageSrc="/imgs/2aOboQo25brRWyPQqVTd2dtFl2v9TS4tVyrsRnaS.webp"
           label="Nghệ Thuật Xuân La"
           className="-right-6 sm:-right-16 md:-right-20 top-6 sm:top-10 z-20"
           floatY={[0, 14, 0]}
@@ -170,7 +170,7 @@ export default function SectionFive({
         />
 
         <FloatingCard
-          imageSrc="/imgs/IMG_5118.jpg"
+          imageSrc="/imgs/IMG_5118.webp"
           label="Tò He & Cà Phê"
           className="-right-4 sm:-right-10 md:-right-14 -bottom-6 sm:-bottom-10 z-20"
           floatY={[0, -10, 0]}

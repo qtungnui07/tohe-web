@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState, useMemo, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF, Environment, Center } from '@react-three/drei';
+import { useGLTF, Center } from '@react-three/drei';
 import * as THREE from 'three';
 
-useGLTF.preload('/base_basic_pbr.glb');
+useGLTF.preload('/tohe-optimized.glb', true);
 
 function clamp(value: number) {
   return Math.min(1, Math.max(0, value));
@@ -16,13 +16,13 @@ const SUBTITLE_WORDS = ['Move', 'your', 'cursor!'];
 const TITLE_WORDS = ['What', 'have', 'we', 'accomplished?'];
 
 const TRAIL_IMAGES = [
-  '/imgs/2aOboQo24zMJHedRa7StLO10lRdadV3gKDCgQCoa.jpg',
-  '/imgs/2aOboQo25brRWyPQqVTd2dtFl2v9TS4tVyrsRnaS.jpg',
-  '/imgs/2aOboQo25i9MmQ0n85m8ANG7s1eNgLz6lVHF8vLs.jpg',
-  '/imgs/2aOboQo25nCwAxGRtbAsaAgOcRHXnBmksJBPzgHo.jpg',
-  '/imgs/2aOboQo260rFVhXL8WPUocTc3Biis0BV3cLfFUGm.jpg',
-  '/imgs/IMG_5118.jpg',
-  '/imgs/IMG_5119.jpg',
+  '/imgs/2aOboQo24zMJHedRa7StLO10lRdadV3gKDCgQCoa.webp',
+  '/imgs/2aOboQo25brRWyPQqVTd2dtFl2v9TS4tVyrsRnaS.webp',
+  '/imgs/2aOboQo25i9MmQ0n85m8ANG7s1eNgLz6lVHF8vLs.webp',
+  '/imgs/2aOboQo25nCwAxGRtbAsaAgOcRHXnBmksJBPzgHo.webp',
+  '/imgs/2aOboQo260rFVhXL8WPUocTc3Biis0BV3cLfFUGm.webp',
+  '/imgs/IMG_5118.webp',
+  '/imgs/IMG_5119.webp',
 ];
 
 interface DragonData {
@@ -48,7 +48,7 @@ const NEAR_DRAGONS: DragonData[] = [
 ];
 
 function FloatingDragon({ initialPos, scaleMultiplier, rotationOffset, floatSpeed, floatRange }: DragonData) {
-  const { scene } = useGLTF('/base_basic_pbr.glb');
+  const { scene } = useGLTF('/tohe-optimized.glb', true);
   const model = useMemo(() => scene.clone(true), [scene]);
   const groupRef = useRef<THREE.Group>(null!);
 
@@ -89,38 +89,36 @@ function DragonParallaxScene({ dragons }: { dragons: DragonData[] }) {
   return (
     <>
       <ambientLight intensity={0.9} />
-      <directionalLight position={[3, 5, 4]} intensity={2.2} castShadow />
+      <directionalLight position={[3, 5, 4]} intensity={2.2} />
       <directionalLight position={[-3, 2, -2]} intensity={0.7} color="#ffe0b2" />
-      <pointLight position={[0, 3, 2]} intensity={0.8} color="#fff3e0" />
 
       {dragons.map((dragon, idx) => (
         <FloatingDragon key={idx} {...dragon} />
       ))}
-      <Environment preset="city" />
     </>
   );
 }
 
-function DragonCanvasLayer({ dragons, filter, opacity }: { dragons: DragonData[]; filter: string; opacity: number }) {
+/* Single merged Canvas for all dragon layers — avoids 3 separate WebGL contexts */
+function DragonCanvasMerged() {
+  const allDragons = useMemo(() => [...FAR_DRAGONS, ...MID_DRAGONS, ...NEAR_DRAGONS], []);
   return (
     <div
       style={{
         position: 'absolute',
         inset: 0,
         pointerEvents: 'none',
-        filter,
-        opacity,
-        willChange: 'filter',
       }}
     >
       <Canvas
         camera={{ position: [0, -0.1, 4.5], fov: 32 }}
-        gl={{ antialias: true, alpha: true }}
+        gl={{ antialias: false, alpha: true, powerPreference: 'low-power' }}
+        dpr={[1, 1.5]}
         frameloop="always"
         style={{ width: '100%', height: '100%', background: 'transparent' }}
       >
         <Suspense fallback={null}>
-          <DragonParallaxScene dragons={dragons} />
+          <DragonParallaxScene dragons={allDragons} />
         </Suspense>
       </Canvas>
     </div>
@@ -204,7 +202,10 @@ export default function SectionFour() {
 
   useEffect(() => {
     let frame = 0;
-    const update = () => {
+    let lastTime = 0;
+    const update = (time: number) => {
+      if (time - lastTime < 33) { frame = requestAnimationFrame(update); return; }
+      lastTime = time;
       const section = sectionRef.current;
       if (section) {
         const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
@@ -250,7 +251,7 @@ export default function SectionFour() {
         rotation: randomRotation,
       };
 
-      setTrailImages((prev) => [...prev.slice(-15), newImage]); // keep max 16 active in state
+      setTrailImages((prev) => [...prev.slice(-7), newImage]); // keep max 8 active in state
     };
 
     window.addEventListener('pointermove', handlePointerMove);
@@ -277,10 +278,8 @@ export default function SectionFour() {
           pointerEvents: 'none',
         }}
       >
-        {/* 3D Floating Dragon Background Layers */}
-        <DragonCanvasLayer dragons={FAR_DRAGONS} filter="blur(6px)" opacity={0.65} />
-        <DragonCanvasLayer dragons={MID_DRAGONS} filter="blur(2.2px)" opacity={0.85} />
-        <DragonCanvasLayer dragons={NEAR_DRAGONS} filter="blur(0px)" opacity={0.98} />
+        {/* Single merged 3D Canvas for all floating dragons */}
+        <DragonCanvasMerged />
 
         {/* Subtitle: "Move your cursor!" */}
         <h3

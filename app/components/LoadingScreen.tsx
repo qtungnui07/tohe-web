@@ -6,7 +6,7 @@ import { useGLTF, useProgress, Center } from '@react-three/drei';
 import * as THREE from 'three';
 
 // Start GLB fetch the moment this module is imported
-useGLTF.preload('/base_basic_pbr.glb');
+useGLTF.preload('/tohe-optimized.glb', true);
 
 /* ─────────────────────────────────────────────
    Mini spinning model — runs at 30 fps to stay
@@ -14,7 +14,7 @@ useGLTF.preload('/base_basic_pbr.glb');
 ───────────────────────────────────────────── */
 function MiniTohe() {
   const group = useRef<THREE.Group>(null!);
-  const { scene } = useGLTF('/base_basic_pbr.glb');
+  const { scene } = useGLTF('/tohe-optimized.glb', true);
   const model = useMemo(() => scene.clone(true), [scene]);
 
   const scale = (() => {

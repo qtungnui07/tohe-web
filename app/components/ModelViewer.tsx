@@ -2,17 +2,16 @@
 
 import { useMemo, Suspense, useRef, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useGLTF, Environment, Center, OrbitControls } from '@react-three/drei';
+import { useGLTF, Center, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 
 // Preload in the module scope — fires as soon as Next.js imports this file.
-// drei caches the result so any subsequent useGLTF('/base_basic_pbr.glb') call
-// (including the one in LoadingScreen) hits the cache immediately.
-useGLTF.preload('/base_basic_pbr.glb');
+// drei caches the result so any subsequent useGLTF call hits the cache immediately.
+useGLTF.preload('/tohe-optimized.glb', true);
 
 function ToheModel({ onReady, sectionTwo }: { onReady: () => void; sectionTwo: boolean }) {
-  const { scene } = useGLTF('/base_basic_pbr.glb');
+  const { scene } = useGLTF('/tohe-optimized.glb', true);
   const hasReportedReady = useRef(false);
   // A Three object can only belong to one canvas parent. Each hero/section needs its own clone.
   const model = useMemo(() => scene.clone(true), [scene]);
@@ -136,19 +135,18 @@ export default function ModelViewer({
       <Canvas
         // A wider camera safety margin prevents crop on refresh and shorter viewports.
         camera={{ position: [0, -0.1, 4.10], fov: 30 }}
-        gl={{ antialias: true, alpha: true }}
+        gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
+        dpr={[1, 1.5]}
         frameloop="always"
         style={{ background: 'transparent', width: '100%', height: '100%', position: 'absolute', inset: 0 }}
       >
         <ambientLight intensity={0.8} />
-        <directionalLight position={[3, 5, 4]} intensity={2.0} castShadow />
+        <directionalLight position={[3, 5, 4]} intensity={2.0} />
         <directionalLight position={[-3, 2, -2]} intensity={0.6} color="#ffe0b2" />
-        <pointLight position={[0, 3, 2]} intensity={0.7} color="#fff3e0" />
 
         <Suspense fallback={null}>
           <ToheModel onReady={onReady} sectionTwo={sectionTwo} />
           <ModelControls interactive={interactive} sectionTwo={sectionTwo} />
-          <Environment preset="city" />
         </Suspense>
       </Canvas>
     </div>

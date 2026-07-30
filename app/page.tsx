@@ -71,7 +71,7 @@ export default function Home() {
     });
 
     const tasks = [
-      loadImage('/4.png'),
+      loadImage('/4.webp'),
       loadImage('/Logo-Dai-hoc-CMC-V.webp'),
       waitForAudio(audioRef.current),
     ];

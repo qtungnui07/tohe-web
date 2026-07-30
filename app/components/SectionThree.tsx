@@ -4,12 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 
 const NIGHT_CROSSES = [
-  ['7%', '12%', 8, 0.1], ['15%', '26%', 11, 0.48], ['25%', '9%', 8, 0.76],
-  ['37%', '18%', 10, 0.24], ['49%', '8%', 8, 0.92], ['63%', '15%', 11, 0.57],
-  ['77%', '10%', 9, 0.34], ['90%', '22%', 10, 0.83], ['9%', '49%', 9, 0.65],
-  ['19%', '70%', 11, 0.18], ['31%', '85%', 8, 1.03], ['43%', '72%', 10, 0.41],
-  ['58%', '84%', 9, 0.71], ['70%', '65%', 12, 0.29], ['83%', '78%', 8, 0.98],
-  ['93%', '52%', 10, 0.53], ['5%', '88%', 8, 0.87], ['88%', '91%', 11, 0.38],
+  ['7%', '12%', 8, 0.1], ['25%', '9%', 8, 0.76],
+  ['49%', '8%', 8, 0.92], ['77%', '10%', 9, 0.34],
+  ['19%', '70%', 11, 0.18], ['43%', '72%', 10, 0.41],
+  ['70%', '65%', 12, 0.29], ['93%', '52%', 10, 0.53],
+  ['5%', '88%', 8, 0.87], ['88%', '91%', 11, 0.38],
 ] as const;
 
 const TOPICS = [
@@ -93,7 +92,10 @@ export default function SectionThree() {
 
   useEffect(() => {
     let frame = 0;
-    const update = () => {
+    let lastTime = 0;
+    const update = (time: number) => {
+      if (time - lastTime < 33) { frame = requestAnimationFrame(update); return; }
+      lastTime = time;
       const section = sectionRef.current;
       if (section) {
         const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
@@ -125,7 +127,7 @@ export default function SectionThree() {
 
       <div style={{ position: 'fixed', inset: 0, zIndex: 6, display: 'grid', placeItems: 'center', pointerEvents: 'none' }}>
         <img
-          src="/4.png"
+          src="/4.webp"
           alt="Những con tò he trong giỏ tre"
           style={{
             width: 'min(86vw, 1120px)',

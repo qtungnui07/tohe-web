@@ -4,7 +4,7 @@
   font-family: "BTDanta";
   src: url("/BTDanta-Bold.otf") format("opentype");
   font-weight: 700;
-  font-display: block;
+  font-display: swap;
 }
 
 *, *::before, *::after {

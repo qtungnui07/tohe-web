@@ -9,12 +9,11 @@ const ModelViewer = dynamic(() => import('./ModelViewer'), { ssr: false });
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const HERO_CROSSES = [
-  ['7%', '13%', 8, 0.12], ['17%', '25%', 11, 0.42], ['29%', '12%', 9, 0.81],
-  ['43%', '21%', 8, 0.27], ['58%', '11%', 12, 0.62], ['74%', '18%', 8, 0.98],
-  ['88%', '11%', 10, 0.54], ['10%', '46%', 10, 0.76], ['22%', '58%', 8, 0.33],
-  ['33%', '72%', 11, 0.72], ['45%', '87%', 8, 0.19], ['57%', '78%', 10, 0.96],
-  ['68%', '62%', 9, 0.48], ['80%', '72%', 12, 0.84], ['91%', '48%', 8, 0.24],
-  ['14%', '84%', 9, 0.65], ['92%', '86%', 10, 0.39], ['5%', '75%', 8, 1.05],
+  ['7%', '13%', 8, 0.12], ['29%', '12%', 9, 0.81],
+  ['58%', '11%', 12, 0.62], ['88%', '11%', 10, 0.54],
+  ['22%', '58%', 8, 0.33], ['45%', '87%', 8, 0.19],
+  ['68%', '62%', 9, 0.48], ['80%', '72%', 12, 0.84],
+  ['14%', '84%', 9, 0.65], ['5%', '75%', 8, 1.05],
 ] as const;
 
 /* ── decorative "+" cross ── */
@@ -138,7 +137,11 @@ function useDragonParallax(target: RefObject<HTMLElement | null>) {
 
   useEffect(() => {
     let frame = 0;
-    const update = () => {
+    let lastTime = 0;
+    const update = (time: number) => {
+      // Throttle to ~30fps for scroll calculations
+      if (time - lastTime < 33) { frame = requestAnimationFrame(update); return; }
+      lastTime = time;
       const section = target.current;
       if (section) {
         const travel = Math.max(1, section.offsetHeight - window.innerHeight);
@@ -171,7 +174,10 @@ export default function HeroScene({
   const [progress, setProgress] = useState(0);
   useEffect(() => {
     let frame = 0;
-    const update = () => {
+    let lastTime = 0;
+    const update = (time: number) => {
+      if (time - lastTime < 33) { frame = requestAnimationFrame(update); return; }
+      lastTime = time;
       const section = sectionRef.current;
       if (section) {
         const travel = Math.max(1, section.offsetHeight - window.innerHeight);
