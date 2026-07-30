@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, Suspense, useEffect, useState, useCallback } from 'react';
+import { Suspense, useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, useProgress, Center } from '@react-three/drei';
 import * as THREE from 'three';
@@ -9,34 +9,16 @@ import * as THREE from 'three';
 useGLTF.preload('/base_basic_pbr.glb');
 
 /* ─────────────────────────────────────────────
-   Reads real load progress from Three's manager.
-   Lives OUTSIDE the Canvas — useProgress() is a
-   Zustand store, not a Canvas context hook.
-───────────────────────────────────────────── */
-function ProgressWatcher({ onReady }: { onReady: () => void }) {
-  const { progress, active } = useProgress();
-  const fired = useRef(false);
-
-  useEffect(() => {
-    if (!active && progress >= 100 && !fired.current) {
-      fired.current = true;
-      setTimeout(onReady, 400);
-    }
-  }, [active, progress, onReady]);
-
-  return null;
-}
-
-/* ─────────────────────────────────────────────
    Mini spinning model — runs at 30 fps to stay
    light while the GLB is still downloading
 ───────────────────────────────────────────── */
 function MiniTohe() {
   const group = useRef<THREE.Group>(null!);
   const { scene } = useGLTF('/base_basic_pbr.glb');
+  const model = useMemo(() => scene.clone(true), [scene]);
 
   const scale = (() => {
-    const box = new THREE.Box3().setFromObject(scene.clone());
+    const box = new THREE.Box3().setFromObject(model);
     const s = box.getSize(new THREE.Vector3());
     const m = Math.max(s.x, s.y, s.z);
     return m === 0 ? 1 : 1.6 / m;
@@ -53,7 +35,7 @@ function MiniTohe() {
   return (
     <Center>
       <group ref={group} scale={scale}>
-        <primitive object={scene} />
+        <primitive object={model} />
       </group>
     </Center>
   );
@@ -79,28 +61,37 @@ function Dots() {
 ───────────────────────────────────────────── */
 interface LoadingScreenProps {
   visible  : boolean;
+  modelReady: boolean;
+  assetsReady: boolean;
+  assetProgress: number;
   onReady  : () => void;
 }
 
-export default function LoadingScreen({ visible, onReady }: LoadingScreenProps) {
-  // useProgress must be called inside a component that renders inside <Canvas>
-  // We read it here via the ProgressWatcher child trick
+export default function LoadingScreen({ visible, modelReady, assetsReady, assetProgress, onReady }: LoadingScreenProps) {
   const { progress } = useProgress();
   const [mounted, setMounted] = useState(false);
   const stableOnReady = useCallback(onReady, []); // eslint-disable-line
+  // The first GLB frame plus all visible media must be ready before we leave.
+  const loadingComplete = modelReady && assetsReady;
+
+  useEffect(() => {
+    if (!loadingComplete) return;
+    // Let the user actually see the completed bar before the hero takes over.
+    const id = setTimeout(stableOnReady, 620);
+    return () => clearTimeout(id);
+  }, [loadingComplete, stableOnReady]);
 
   useEffect(() => {
     const id = setTimeout(() => setMounted(true), 30);
     return () => clearTimeout(id);
   }, []);
 
-  const displayProgress = Math.min(100, Math.round(progress));
+  const displayProgress = loadingComplete
+    ? 100
+    : Math.min(99, Math.max(Math.round(progress * 0.25), assetProgress));
 
   return (
     <>
-      {/* Watches Three.js loader events — no canvas needed */}
-      <ProgressWatcher onReady={stableOnReady} />
-
     <div
       aria-label="Loading"
       style={{
