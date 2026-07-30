@@ -16,13 +16,13 @@ const SUBTITLE_WORDS = ['Move', 'your', 'cursor!'];
 const TITLE_WORDS = ['What', 'have', 'we', 'accomplished?'];
 
 const TRAIL_IMAGES = [
-  '/imgs/2430fcb55aa4a08c340140ad084f8760.jpg',
-  '/imgs/2d66974ef41c2e04e867e916b6bb92b6.jpg',
-  '/imgs/56d109557ab874092ef894e38ec963ed.jpg',
-  '/imgs/a04c6db4128709866acb129d53f877e7.jpg',
-  '/imgs/d72aead29cdadbe48a8ee4b07d1c2686.jpg',
-  '/imgs/dd6d71cdc57c895afeb21ea77fc4487d.jpg',
-  '/imgs/e3f7974144e12da8ca870d0e7f88ebfe.jpg',
+  '/imgs/2aOboQo24zMJHedRa7StLO10lRdadV3gKDCgQCoa.jpg',
+  '/imgs/2aOboQo25brRWyPQqVTd2dtFl2v9TS4tVyrsRnaS.jpg',
+  '/imgs/2aOboQo25i9MmQ0n85m8ANG7s1eNgLz6lVHF8vLs.jpg',
+  '/imgs/2aOboQo25nCwAxGRtbAsaAgOcRHXnBmksJBPzgHo.jpg',
+  '/imgs/2aOboQo260rFVhXL8WPUocTc3Biis0BV3cLfFUGm.jpg',
+  '/imgs/IMG_5118.jpg',
+  '/imgs/IMG_5119.jpg',
 ];
 
 interface DragonData {

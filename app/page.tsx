@@ -8,6 +8,7 @@ const LoadingScreen = dynamic(() => import('@/app/components/LoadingScreen'), { 
 const SectionThree  = dynamic(() => import('@/app/components/SectionThree'), { ssr: false });
 const SectionFour   = dynamic(() => import('@/app/components/SectionFour'), { ssr: false });
 const SectionFive   = dynamic(() => import('@/app/components/SectionFive'), { ssr: false });
+const CraftFeedbackForm = dynamic(() => import('@/app/components/CraftFeedbackForm'), { ssr: false });
 
 export default function Home() {
   const [phase,      setPhase]      = useState<'enter' | 'loading' | 'fading' | 'done'>('enter');
@@ -18,14 +19,17 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const startExperience = useCallback(() => {
-    const audio = new Audio('/Porter Robinson - Goodbye To A World (Audio) [W2TE0DjdNqI].mp3');
+    const audio = new Audio('/music.mp3');
     audio.loop = true;
     audio.volume = 0.5;
     audio.preload = 'auto';
     audioRef.current = audio;
-    void audio.play().catch(() => {
-      // The visual experience still starts if a browser blocks audio for any reason.
-    });
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        console.error('Audio playback failed:', err);
+      });
+    }
     setPhase('loading');
   }, []);
 
@@ -144,10 +148,10 @@ export default function Home() {
               borderRadius : 999,
               background   : 'transparent',
               color        : '#fff',
-              padding      : '0.55em 0.42em 0.55em 0.62em',
+              padding      : '0.6em 1.8em',
               fontFamily   : '"BTDanta", sans-serif',
               fontWeight   : 800,
-              fontSize     : 'clamp(14px, 1vw, 30px)',
+              fontSize     : 'clamp(12px, 0.85vw, 18px)',
               letterSpacing: '0.23em',
               lineHeight   : 1,
               cursor       : 'pointer',
@@ -185,6 +189,7 @@ export default function Home() {
       {phase !== 'enter' && <SectionThree />}
       {phase !== 'enter' && <SectionFour />}
       {phase !== 'enter' && <SectionFive onVideoStateChange={handleVideoStateChange} />}
+      {phase !== 'enter' && <CraftFeedbackForm />}
 
     </main>
   );

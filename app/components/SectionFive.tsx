@@ -28,7 +28,11 @@ function FloatingCard({
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className={`absolute ${className}`}
+      drag
+      dragSnapToOrigin={false}
+      dragElastic={0.1}
+      whileDrag={{ scale: 1.08, zIndex: 50, cursor: 'grabbing' }}
+      className={`absolute ${className} z-40 touch-none cursor-grab`}
     >
       <motion.div
         animate={{ y: floatY, rotate: [rotateDeg, rotateDeg + 1.5, rotateDeg] }}
@@ -40,17 +44,17 @@ function FloatingCard({
           ease: 'easeInOut',
         }}
         whileHover={{
-          scale: 1.08,
-          rotate: rotateDeg > 0 ? rotateDeg + 4 : rotateDeg - 4,
-          zIndex: 40,
+          scale: 1.05,
+          rotate: rotateDeg > 0 ? rotateDeg + 3 : rotateDeg - 3,
         }}
-        className="p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl bg-[#FDFBF7] shadow-xl hover:shadow-2xl transition-shadow duration-300 border border-amber-100/70 cursor-pointer w-40 sm:w-56 md:w-64"
+        className="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-[#FDFBF7] shadow-xl hover:shadow-2xl transition-shadow duration-300 border border-amber-100/70 w-48 sm:w-64 md:w-80 select-none"
       >
-        <div className="relative aspect-square w-full overflow-hidden rounded-xl sm:rounded-2xl bg-stone-100">
+        <div className="relative aspect-square w-full overflow-hidden rounded-xl sm:rounded-2xl bg-stone-100 pointer-events-none">
           <img
             src={imageSrc}
             alt={label}
-            className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+            draggable={false}
+            className="h-full w-full object-cover select-none"
           />
           {/* Capsule Label Overlay */}
           <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 w-[88%] px-3 py-1.5 rounded-full bg-white/85 backdrop-blur-md shadow-sm border border-white/60 text-center">
@@ -92,12 +96,12 @@ export default function SectionFive({
   };
 
   return (
-    <section className="relative z-30 w-full min-h-screen bg-[#F9F6F0] py-16 px-4 sm:px-8 md:px-12 overflow-hidden flex flex-col justify-center items-center">
+    <section className="relative z-30 w-full min-h-screen bg-[#F9F6F0] py-20 px-4 sm:px-8 md:px-12 overflow-hidden flex flex-col justify-center items-center">
       {/* Subtle Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-amber-200/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-amber-200/20 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Main Showcase Container (Larger Scale max-w-6xl) */}
-      <div className="relative w-full max-w-6xl mx-auto px-2">
+      {/* Main Showcase Container (Larger Scale max-w-7xl) */}
+      <div className="relative w-full max-w-7xl mx-auto px-2">
         {/* Main Centerpiece (Video Canvas) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -113,7 +117,7 @@ export default function SectionFive({
         >
           <video
             ref={videoRef}
-            src="/2026-07-30 17-39-28.mp4"
+            src="/to-hehehehe.mp4"
             loop
             playsInline
             className="w-full h-full object-cover"
@@ -147,18 +151,18 @@ export default function SectionFive({
 
         {/* Floating Product Cards */}
         <FloatingCard
-          imageSrc="/imgs/2430fcb55aa4a08c340140ad084f8760.jpg"
+          imageSrc="/imgs/2aOboQo24zMJHedRa7StLO10lRdadV3gKDCgQCoa.jpg"
           label="Tò He Rồng Thiêng"
-          className="-left-4 sm:-left-12 md:-left-16 top-1/4 z-20"
+          className="-left-6 sm:-left-16 md:-left-20 top-1/4 z-20"
           floatY={[0, -12, 0]}
           floatDuration={4.2}
           rotateDeg={-3}
         />
 
         <FloatingCard
-          imageSrc="/imgs/e3f7974144e12da8ca870d0e7f88ebfe.jpg"
+          imageSrc="/imgs/2aOboQo25brRWyPQqVTd2dtFl2v9TS4tVyrsRnaS.jpg"
           label="Nghệ Thuật Xuân La"
-          className="-right-4 sm:-right-12 md:-right-16 top-6 sm:top-10 z-20"
+          className="-right-6 sm:-right-16 md:-right-20 top-6 sm:top-10 z-20"
           floatY={[0, 14, 0]}
           floatDuration={3.8}
           floatDelay={0.5}
@@ -166,9 +170,9 @@ export default function SectionFive({
         />
 
         <FloatingCard
-          imageSrc="/imgs/56d109557ab874092ef894e38ec963ed.jpg"
+          imageSrc="/imgs/IMG_5118.jpg"
           label="Tò He & Cà Phê"
-          className="-right-3 sm:-right-8 md:-right-12 -bottom-6 sm:-bottom-10 z-20"
+          className="-right-4 sm:-right-10 md:-right-14 -bottom-6 sm:-bottom-10 z-20"
           floatY={[0, -10, 0]}
           floatDuration={4.6}
           floatDelay={1}
