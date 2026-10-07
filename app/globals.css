@@ -22,3 +22,9 @@ html, body {
   scroll-behavior: smooth;
   font-family: "BTDanta", serif;
 }
+
+/* Allow page scroll over Three.js canvas */
+div[data-engine] canvas,
+div[style*="touch-action"] canvas {
+  touch-action: pan-y !important;
+}

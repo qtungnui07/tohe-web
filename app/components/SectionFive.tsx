@@ -78,6 +78,8 @@ export default function SectionFive({
 }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [videoReady, setVideoReady] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const togglePlay = () => {
@@ -117,11 +119,40 @@ export default function SectionFive({
         >
           <video
             ref={videoRef}
-            src="/to-hehehehe.mp4"
             loop
             playsInline
+            preload="metadata"
+            poster="/video-poster.jpg"
+            onLoadedData={() => setVideoReady(true)}
+            onError={(e) => {
+              const vid = e.currentTarget;
+              // Fallback: if compressed version fails, try original
+              if (vid.src.includes('-web.mp4')) {
+                vid.src = '/to-hehehehe.mp4';
+              } else {
+                setVideoError(true);
+              }
+            }}
             className="w-full h-full object-cover"
-          />
+          >
+            <source src="/to-hehehehe-web.mp4" type="video/mp4" />
+            <source src="/to-hehehehe.mp4" type="video/mp4" />
+          </video>
+
+          {/* Loading / Error state */}
+          {!videoReady && !videoError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-stone-900 z-20">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-10 h-10 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                <span className="text-white/60 text-sm font-medium tracking-wide">Đang tải video…</span>
+              </div>
+            </div>
+          )}
+          {videoError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-stone-900 z-20">
+              <span className="text-white/50 text-sm">Không thể tải video</span>
+            </div>
+          )}
 
           {/* Icon-Only Center Play / Pause Button */}
           <AnimatePresence>

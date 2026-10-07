@@ -102,6 +102,7 @@ function ModelControls({ interactive, sectionTwo }: { interactive: boolean; sect
       enabled={interactive}
       enablePan={false}
       enableZoom={false}
+      enableRotate={interactive}
       enableDamping
       dampingFactor={0.08}
       minPolarAngle={Math.PI * 0.34}
@@ -129,6 +130,7 @@ export default function ModelViewer({
         height: '100%',
         position: 'absolute',
         inset: 0,
+        touchAction: 'pan-y',
       }}
     >
       {/* Camera: z=4.5, fov=30 → model fills ~40% of viewport, centred */}
@@ -138,7 +140,8 @@ export default function ModelViewer({
         gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
         dpr={[1, 1.5]}
         frameloop="always"
-        style={{ background: 'transparent', width: '100%', height: '100%', position: 'absolute', inset: 0 }}
+        style={{ background: 'transparent', width: '100%', height: '100%', position: 'absolute', inset: 0, touchAction: 'pan-y' }}
+        onWheel={undefined}
       >
         <ambientLight intensity={0.8} />
         <directionalLight position={[3, 5, 4]} intensity={2.0} />

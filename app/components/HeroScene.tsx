@@ -297,6 +297,68 @@ export default function HeroScene({
         ))}
       </div>
 
+      {/* ─────────────────────────────────────────────
+          Scroll-down arrow button
+      ───────────────────────────────────────────── */}
+      <motion.button
+        type="button"
+        aria-label="Cuộn xuống"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: show && progress < 0.18 ? 1 : 0, y: show && progress < 0.18 ? 0 : 10 }}
+        transition={{ duration: 0.5, delay: 1.6, ease: EASE }}
+        onClick={() => {
+          const section = sectionRef.current;
+          if (section) {
+            const nextSection = section.nextElementSibling as HTMLElement | null;
+            if (nextSection) {
+              nextSection.scrollIntoView({ behavior: 'smooth' });
+            } else {
+              window.scrollTo({ top: section.offsetTop + section.offsetHeight, behavior: 'smooth' });
+            }
+          }
+        }}
+        style={{
+          position: 'absolute',
+          zIndex: 10,
+          bottom: 'clamp(24px, 5vh, 48px)',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: 12,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 6,
+        }}
+      >
+        <span style={{
+          fontSize: 'clamp(9px, 0.7vw, 11px)',
+          letterSpacing: '0.22em',
+          textTransform: 'uppercase',
+          color: 'rgba(255,255,255,0.55)',
+          fontFamily: '"BTDanta", sans-serif',
+          fontWeight: 600,
+        }}>
+          Cuộn xuống
+        </span>
+        <motion.svg
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="rgba(255,255,255,0.7)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </motion.svg>
+      </motion.button>
+
       </div>
 
     </section>
