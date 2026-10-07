@@ -127,16 +127,17 @@ export default function SectionFive({
             onError={(e) => {
               const vid = e.currentTarget;
               // Fallback: if compressed version fails, try original
-              if (vid.src.includes('-web.mp4')) {
-                vid.src = '/to-hehehehe.mp4';
+              const fallbackUrl = 'https://drive.qtitpc.dev/api/public/files/4Mg7BH6enTyS1t9UPWKDo_eX1KFq5SVk/raw';
+              if (vid.src !== fallbackUrl) {
+                vid.src = fallbackUrl;
               } else {
                 setVideoError(true);
               }
             }}
             className="w-full h-full object-cover"
           >
-            <source src="/to-hehehehe-web.mp4" type="video/mp4" />
-            <source src="/to-hehehehe.mp4" type="video/mp4" />
+            <source src="https://drive.qtitpc.dev/api/public/files/JxbITXeJDund_rMlkZcuNjMefN6EEocf/raw" type="video/mp4" />
+            <source src="https://drive.qtitpc.dev/api/public/files/4Mg7BH6enTyS1t9UPWKDo_eX1KFq5SVk/raw" type="video/mp4" />
           </video>
 
           {/* Loading / Error state */}
