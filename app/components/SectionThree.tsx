@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import NextImage from 'next/image';
 import { motion } from 'motion/react';
+import { clamp } from '@/lib/helpers.mjs';
 
 const NIGHT_CROSSES = [
   ['7%', '12%', 8, 0.1], ['25%', '9%', 8, 0.76],
@@ -33,10 +34,6 @@ const CURVE_WORDS = [
   { word: 'LÀ', offset: '56%' },
   { word: 'GÌ?', offset: '72%' },
 ] as const;
-
-function clamp(value: number) {
-  return Math.min(1, Math.max(0, value));
-}
 
 function NightCross({ x, y, size, delay }: { x: string; y: string; size: number; delay: number }) {
   return (

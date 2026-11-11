@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState, useCallback, useRef, useMemo } from 'rea
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, useProgress, Center } from '@react-three/drei';
 import * as THREE from 'three';
+import { calculateLoadingProgress } from '@/lib/helpers.mjs';
 
 // Start GLB fetch the moment this module is imported
 useGLTF.preload('/tohe-optimized.glb', true);
@@ -86,9 +87,7 @@ export default function LoadingScreen({ visible, modelReady, assetsReady, assetP
     return () => clearTimeout(id);
   }, []);
 
-  const displayProgress = loadingComplete
-    ? 100
-    : Math.min(99, Math.max(Math.round(progress * 0.25), assetProgress));
+  const displayProgress = calculateLoadingProgress(modelReady, assetsReady, progress, assetProgress);
 
   return (
     <>

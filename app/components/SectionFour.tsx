@@ -5,12 +5,9 @@ import { motion } from 'motion/react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, Center } from '@react-three/drei';
 import * as THREE from 'three';
+import { clamp } from '@/lib/helpers.mjs';
 
 useGLTF.preload('/tohe-optimized.glb', true);
-
-function clamp(value: number) {
-  return Math.min(1, Math.max(0, value));
-}
 
 const SUBTITLE_WORDS = ['Move', 'your', 'cursor!'];
 const TITLE_WORDS = ['What', 'have', 'we', 'accomplished?'];

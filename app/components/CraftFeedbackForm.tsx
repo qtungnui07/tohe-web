@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'motion/react';
+import { easeOutCubic, validateFeedbackForm } from '@/lib/helpers.mjs';
 
 /*
  * Taste-skill compliant feedback form.
@@ -25,7 +26,7 @@ export default function CraftFeedbackForm() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !message.trim()) return;
+    if (!validateFeedbackForm(name, message)) return;
     setStatus('submitting');
 
     const start = performance.now();
@@ -33,7 +34,7 @@ export default function CraftFeedbackForm() {
     const tick = () => {
       const elapsed = performance.now() - start;
       const t = Math.min(elapsed / duration, 1);
-      progress.set(1 - Math.pow(1 - t, 3));
+      progress.set(easeOutCubic(t));
       if (t < 1) {
         requestAnimationFrame(tick);
       } else {
