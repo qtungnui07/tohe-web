@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useMemo, useCallback, Suspense } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, Center } from '@react-three/drei';
 import * as THREE from 'three';
@@ -287,7 +287,7 @@ export default function SectionFour() {
             position: 'relative',
             zIndex: 10,
             margin: '0 0 14px',
-            fontFamily: '"Shadows Into Light", cursive',
+            fontFamily: 'var(--font-shadows-into-light), cursive',
             fontSize: 'clamp(26px, 2.6vw, 44px)',
             color: '#3d312b',
             display: 'flex',
@@ -322,7 +322,7 @@ export default function SectionFour() {
             position: 'relative',
             zIndex: 10,
             margin: 0,
-            fontFamily: '"Covered By Your Grace", cursive',
+            fontFamily: 'var(--font-covered-by-your-grace), cursive',
             fontSize: 'clamp(52px, 6.5vw, 110px)',
             color: '#211815',
             display: 'flex',

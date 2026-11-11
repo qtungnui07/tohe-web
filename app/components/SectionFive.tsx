@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import NextImage from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface FloatingCardProps {
@@ -50,17 +51,19 @@ function FloatingCard({
         className="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-[#FDFBF7] shadow-xl hover:shadow-2xl transition-shadow duration-300 border border-amber-100/70 w-48 sm:w-64 md:w-80 select-none"
       >
         <div className="relative aspect-square w-full overflow-hidden rounded-xl sm:rounded-2xl bg-stone-100 pointer-events-none">
-          <img
+          <NextImage
             src={imageSrc}
             alt={label}
+            fill
+            sizes="(max-width: 640px) 192px, (max-width: 768px) 256px, 320px"
             draggable={false}
-            className="h-full w-full object-cover select-none"
+            className="object-cover select-none"
           />
           {/* Capsule Label Overlay */}
           <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 w-[88%] px-3 py-1.5 rounded-full bg-white/85 backdrop-blur-md shadow-sm border border-white/60 text-center">
             <span
               className="block text-xs sm:text-sm font-semibold tracking-wide text-stone-800 truncate"
-              style={{ fontFamily: '"Shadows Into Light", cursive, sans-serif' }}
+              style={{ fontFamily: 'var(--font-shadows-into-light), cursive, sans-serif' }}
             >
               {label}
             </span>

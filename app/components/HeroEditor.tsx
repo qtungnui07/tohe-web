@@ -89,6 +89,76 @@ function Section({ title, children }: { title:string; children:React.ReactNode }
   );
 }
 
+type SetConfigValue = (key: keyof Config) => (value: number) => void;
+
+interface ControlsProps {
+  activeLayer: LayerId | null;
+  cfg: Config;
+  onConfigChange: SetConfigValue;
+}
+
+function Controls({ activeLayer, cfg, onConfigChange }: ControlsProps) {
+  if (!activeLayer || activeLayer === 'bg')
+    return <div style={{ color:'rgba(255,255,255,0.3)', fontSize:11, textAlign:'center', padding:'28px 0' }}>Select a layer<br/>then drag in canvas</div>;
+  if (activeLayer === 'model') return (
+    <>
+      <Section title="Position — drag canvas to move">
+        <Slider label="Pos X" value={cfg.posX} min={-3} max={3} step={0.01} onChange={onConfigChange('posX')} />
+        <Slider label="Pos Y" value={cfg.posY} min={-3} max={3} step={0.01} onChange={onConfigChange('posY')} />
+      </Section>
+      <Section title="Scale — scroll wheel or slider">
+        <Slider label="Scale" value={cfg.modelScale} min={0.1} max={5} step={0.05} onChange={onConfigChange('modelScale')} />
+      </Section>
+      <Section title="Rotation — sliders only">
+        <Slider label="Rotate X" value={cfg.rotX} min={-Math.PI} max={Math.PI} onChange={onConfigChange('rotX')} />
+        <Slider label="Rotate Y" value={cfg.rotY} min={-Math.PI} max={Math.PI} onChange={onConfigChange('rotY')} />
+        <Slider label="Rotate Z" value={cfg.rotZ} min={-Math.PI} max={Math.PI} onChange={onConfigChange('rotZ')} />
+      </Section>
+      <Section title="Camera">
+        <Slider label="Distance Z" value={cfg.camZ}   min={2} max={12} step={0.1} onChange={onConfigChange('camZ')} />
+        <Slider label="FOV"        value={cfg.camFov} min={10} max={90} step={1}  onChange={onConfigChange('camFov')} unit="°" />
+      </Section>
+    </>
+  );
+  if (activeLayer === 'textBack' || activeLayer === 'textFront') return (
+    <>
+      <Section title="Position — drag text to move">
+        <Slider label="Left" value={cfg.textLeft} min={0} max={100} step={0.5} onChange={onConfigChange('textLeft')} unit="%" />
+        <Slider label="Top"  value={cfg.textTop}  min={10} max={90} step={0.5} onChange={onConfigChange('textTop')}  unit="%" />
+      </Section>
+      <Section title="Typography">
+        <Slider label="Font size"    value={cfg.fontSize}     min={8}    max={40}   step={0.5}  onChange={onConfigChange('fontSize')}     unit="vw" />
+        <Slider label="Line height"  value={cfg.lineHeight}   min={0.5}  max={1.5}  step={0.01} onChange={onConfigChange('lineHeight')} />
+        <Slider label="Letter space" value={cfg.letterSpacing} min={-0.15} max={0.1} step={0.005} onChange={onConfigChange('letterSpacing')} unit="em" />
+      </Section>
+      {activeLayer === 'textBack' && (
+        <Section title="Glow">
+          <Slider label="R1 size" value={cfg.glowR1} min={0} max={80}  step={1}   onChange={onConfigChange('glowR1')} unit="px" />
+          <Slider label="R1 α"    value={cfg.glowO1} min={0} max={1}   step={0.01} onChange={onConfigChange('glowO1')} />
+          <Slider label="R2 size" value={cfg.glowR2} min={0} max={120} step={1}   onChange={onConfigChange('glowR2')} unit="px" />
+          <Slider label="R2 α"    value={cfg.glowO2} min={0} max={1}   step={0.01} onChange={onConfigChange('glowO2')} />
+          <Slider label="R3 size" value={cfg.glowR3} min={0} max={200} step={2}   onChange={onConfigChange('glowR3')} unit="px" />
+          <Slider label="R3 α"    value={cfg.glowO3} min={0} max={1}   step={0.01} onChange={onConfigChange('glowO3')} />
+        </Section>
+      )}
+      {activeLayer === 'textFront' && (
+        <Section title="Outline">
+          <Slider label="Stroke width"   value={cfg.strokeW} min={0.5} max={5} step={0.1}  onChange={onConfigChange('strokeW')} unit="px" />
+          <Slider label="Stroke opacity" value={cfg.strokeO} min={0}   max={1} step={0.01} onChange={onConfigChange('strokeO')} />
+        </Section>
+      )}
+    </>
+  );
+  if (activeLayer === 'tagline') return (
+    <Section title="Tagline — drag to move">
+      <Slider label="Top"       value={cfg.tagTop}   min={5}  max={90} step={1}   onChange={onConfigChange('tagTop')}   unit="%" />
+      <Slider label="Right"     value={cfg.tagRight} min={1}  max={60} step={1}   onChange={onConfigChange('tagRight')} unit="%" />
+      <Slider label="Font size" value={cfg.tagSize}  min={0.5} max={5} step={0.1} onChange={onConfigChange('tagSize')}  unit="vw" />
+    </Section>
+  );
+  return null;
+}
+
 export default function HeroEditor() {
   const [cfg, setCfg]             = useState<Config>(DEFAULTS);
   const [activeLayer, setActive]  = useState<LayerId | null>(null);
@@ -217,69 +287,6 @@ top: '${c.tagTop.toFixed(1)}%', right: '${c.tagRight.toFixed(1)}%', fontSize: '$
   const sel = (id: LayerId) => activeLayer === id
     ? '1.5px dashed rgba(245,166,35,0.8)' : '1.5px dashed transparent';
 
-  /* Controls */
-  function Controls() {
-    if (!activeLayer || activeLayer === 'bg')
-      return <div style={{ color:'rgba(255,255,255,0.3)', fontSize:11, textAlign:'center', padding:'28px 0' }}>Select a layer<br/>then drag in canvas</div>;
-    if (activeLayer === 'model') return (
-      <>
-        <Section title="Position — drag canvas to move">
-          <Slider label="Pos X" value={cfg.posX} min={-3} max={3} step={0.01} onChange={set('posX')} />
-          <Slider label="Pos Y" value={cfg.posY} min={-3} max={3} step={0.01} onChange={set('posY')} />
-        </Section>
-        <Section title="Scale — scroll wheel or slider">
-          <Slider label="Scale" value={cfg.modelScale} min={0.1} max={5} step={0.05} onChange={set('modelScale')} />
-        </Section>
-        <Section title="Rotation — sliders only">
-          <Slider label="Rotate X" value={cfg.rotX} min={-Math.PI} max={Math.PI} onChange={set('rotX')} />
-          <Slider label="Rotate Y" value={cfg.rotY} min={-Math.PI} max={Math.PI} onChange={set('rotY')} />
-          <Slider label="Rotate Z" value={cfg.rotZ} min={-Math.PI} max={Math.PI} onChange={set('rotZ')} />
-        </Section>
-        <Section title="Camera">
-          <Slider label="Distance Z" value={cfg.camZ}   min={2} max={12} step={0.1} onChange={set('camZ')} />
-          <Slider label="FOV"        value={cfg.camFov} min={10} max={90} step={1}  onChange={set('camFov')} unit="°" />
-        </Section>
-      </>
-    );
-    if (activeLayer === 'textBack' || activeLayer === 'textFront') return (
-      <>
-        <Section title="Position — drag text to move">
-          <Slider label="Left" value={cfg.textLeft} min={0} max={100} step={0.5} onChange={set('textLeft')} unit="%" />
-          <Slider label="Top"  value={cfg.textTop}  min={10} max={90} step={0.5} onChange={set('textTop')}  unit="%" />
-        </Section>
-        <Section title="Typography">
-          <Slider label="Font size"    value={cfg.fontSize}     min={8}    max={40}   step={0.5}  onChange={set('fontSize')}     unit="vw" />
-          <Slider label="Line height"  value={cfg.lineHeight}   min={0.5}  max={1.5}  step={0.01} onChange={set('lineHeight')} />
-          <Slider label="Letter space" value={cfg.letterSpacing} min={-0.15} max={0.1} step={0.005} onChange={set('letterSpacing')} unit="em" />
-        </Section>
-        {activeLayer === 'textBack' && (
-          <Section title="Glow">
-            <Slider label="R1 size" value={cfg.glowR1} min={0} max={80}  step={1}   onChange={set('glowR1')} unit="px" />
-            <Slider label="R1 α"    value={cfg.glowO1} min={0} max={1}   step={0.01} onChange={set('glowO1')} />
-            <Slider label="R2 size" value={cfg.glowR2} min={0} max={120} step={1}   onChange={set('glowR2')} unit="px" />
-            <Slider label="R2 α"    value={cfg.glowO2} min={0} max={1}   step={0.01} onChange={set('glowO2')} />
-            <Slider label="R3 size" value={cfg.glowR3} min={0} max={200} step={2}   onChange={set('glowR3')} unit="px" />
-            <Slider label="R3 α"    value={cfg.glowO3} min={0} max={1}   step={0.01} onChange={set('glowO3')} />
-          </Section>
-        )}
-        {activeLayer === 'textFront' && (
-          <Section title="Outline">
-            <Slider label="Stroke width"   value={cfg.strokeW} min={0.5} max={5} step={0.1}  onChange={set('strokeW')} unit="px" />
-            <Slider label="Stroke opacity" value={cfg.strokeO} min={0}   max={1} step={0.01} onChange={set('strokeO')} />
-          </Section>
-        )}
-      </>
-    );
-    if (activeLayer === 'tagline') return (
-      <Section title="Tagline — drag to move">
-        <Slider label="Top"       value={cfg.tagTop}   min={5}  max={90} step={1}   onChange={set('tagTop')}   unit="%" />
-        <Slider label="Right"     value={cfg.tagRight} min={1}  max={60} step={1}   onChange={set('tagRight')} unit="%" />
-        <Slider label="Font size" value={cfg.tagSize}  min={0.5} max={5} step={0.1} onChange={set('tagSize')}  unit="vw" />
-      </Section>
-    );
-    return null;
-  }
-
   return (
     <div style={{ width:'100vw', height:'100dvh', background:'#080808', position:'relative',
                   overflow:'hidden', fontFamily:'system-ui,sans-serif', touchAction:'none' }}>
@@ -404,7 +411,7 @@ top: '${c.tagTop.toFixed(1)}%', right: '${c.tagRight.toFixed(1)}%', fontSize: '$
 
         {/* Controls */}
         <div style={{ flex:1, overflowY:'auto', padding:'14px 20px 16px', display:'flex', flexDirection:'column', gap:22 }}>
-          <Controls />
+          <Controls activeLayer={activeLayer} cfg={cfg} onConfigChange={set} />
         </div>
 
         {/* Copy footer */}

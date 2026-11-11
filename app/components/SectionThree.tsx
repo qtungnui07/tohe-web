@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import NextImage from 'next/image';
 import { motion } from 'motion/react';
 
 const NIGHT_CROSSES = [
@@ -126,9 +127,12 @@ export default function SectionThree() {
       </div>
 
       <div style={{ position: 'fixed', inset: 0, zIndex: 6, display: 'grid', placeItems: 'center', pointerEvents: 'none' }}>
-        <img
+        <NextImage
           src="/4.webp"
           alt="Những con tò he trong giỏ tre"
+          width={2000}
+          height={1125}
+          sizes="(max-width: 1302px) 86vw, 1120px"
           style={{
             width: 'min(86vw, 1120px)',
             height: 'auto',

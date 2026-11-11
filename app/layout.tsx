@@ -1,5 +1,18 @@
 import type { Metadata } from "next";
+import { Covered_By_Your_Grace, Shadows_Into_Light } from "next/font/google";
 import "./globals.css";
+
+const coveredByYourGrace = Covered_By_Your_Grace({
+  variable: "--font-covered-by-your-grace",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const shadowsIntoLight = Shadows_Into_Light({
+  variable: "--font-shadows-into-light",
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export const metadata: Metadata = {
   title: "Tò He — Nghệ thuật dân gian Việt Nam",
@@ -12,12 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Covered+By+Your+Grace&family=Shadows+Into+Light&display=swap" rel="stylesheet" />
-      </head>
+    <html lang="vi" className={`${coveredByYourGrace.variable} ${shadowsIntoLight.variable}`}>
       <body style={{ width: "100%", height: "100%", background: "#0a0a0a" }}>
         {children}
       </body>

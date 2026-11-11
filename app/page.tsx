@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import NextImage from 'next/image';
 
 const HeroScene    = dynamic(() => import('@/app/components/HeroScene'),    { ssr: false });
 const LoadingScreen = dynamic(() => import('@/app/components/LoadingScreen'), { ssr: false });
@@ -109,9 +110,12 @@ export default function Home() {
         />
       )}
 
-      {phase !== 'enter' && <img
+      {phase !== 'enter' && <NextImage
         src="/Logo-Dai-hoc-CMC-V.webp"
         alt="Đại học CMC"
+        width={1200}
+        height={578}
+        sizes="(max-width: 768px) 48px, 76px"
         style={{
           position: 'fixed',
           top: 'clamp(10px, 4vw, 20px)',
